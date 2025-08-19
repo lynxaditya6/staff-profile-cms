@@ -18,8 +18,6 @@ const bind = () => {
 
   const exp = parseFloat($("experience").value || "0");
   $("pexpYearsBig").textContent = isFinite(exp) ? exp : 0;
-  $("pexpLine").textContent = `${isFinite(exp) ? exp : 0} years Homecare experience`;
-
   // Patients
   const b = parseInt($("basic").value || "0", 10);
   const a = parseInt($("advance").value || "0", 10);
@@ -103,6 +101,7 @@ $("btn-download").addEventListener("click", async () => {
 
   pdf.save(`${$("name").value || "StaffProfile"}.pdf`);
 });
+
 
 
 
