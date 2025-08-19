@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Staff Profile CMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- PDF + DOM rasterizer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Chart for "Patients Serviced" -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- ====== CMS FORM (left) ====== -->
+    <aside class="form-panel">
+        <h2>Fill Staff Details</h2>
+
+        <label>Name</label>
+        <input id="name" value="Priya Tiwari" />
+
+        <label>Category</label>
+        <input id="category" value="Basic Caretaker" />
+
+        <label>Father's Name</label>
+        <input id="fname" value="Brahma Nand Panday" />
+
+        <div class="row-2">
+            <div>
+                <label>DOB</label>
+                <input id="dob" value="15 Dec 1989" />
+            </div>
+            <div>
+                <label>Marital Status</label>
+                <input id="ms" value="Married" />
+            </div>
+        </div>
+
+        <div class="row-2">
+            <div>
+                <label>Height (ft)</label>
+                <input id="height" type="number" step="0.1" value="5.4" />
+            </div>
+            <div>
+                <label>Weight (Kg)</label>
+                <input id="weight" type="number" value="60" />
+            </div>
+        </div>
+
+        <label>Location</label>
+        <input id="location" value="Faridabad" />
+
+        <label>About Me</label>
+        <textarea id="about"
+            rows="5">My self Priya a medical attendant, with 3+ years of experience into home healthcare. I am skilled in providing personal care such as hygiene, bathing, dressing, and grooming, as well as assisting with daily activities.</textarea>
+
+        <label>Experience (Years)</label>
+        <input id="experience" value="3.9" />
+
+        <div class="row-3">
+            <div>
+                <label>Basic Patients</label>
+                <input id="basic" type="number" value="8" />
+            </div>
+            <div>
+                <label>Advance Patients</label>
+                <input id="advance" type="number" value="2" />
+            </div>
+            <div>
+                <label>Critical Patients</label>
+                <input id="critical" type="number" value="2" />
+            </div>
+        </div>
+
+        <label>Upload Photo</label>
+        <input type="file" id="photo" accept="image/*" />
+
+        <button id="btn-download">Download Styled PDF</button>
+    </aside>
+
+    <!-- ====== A4 SHEET PREVIEW (right) ====== -->
+    <main class="stage">
+        <div id="sheet" class="a4-sheet">
+            <!-- Frame -->
+            <div class="frame">
+                <!-- Header -->
+                <header class="sheet-header">
+                    <div class="avatar-wrap">
+                        <img id="pphoto" class="avatar" alt="Profile" />
+                        <div class="person-name" id="pname">Priya Tiwari</div>
+                        <div class="person-role" id="pcategory">Basic Caretaker</div>
+                    </div>
+                </header>
+
+                <!-- Fixed brand logo -->
+                <div class="brand-fixed">
+                    <img src="FTFPL.jpg" alt="FTFPL" class="brand-logo" />
+                </div>
+
+                <!-- Top identity row -->
+                <section class="identity">
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <span>F. Name</span><b id="pfname">Brahma Nand Panday</b>
+                            <span>Weight</span><b id="pweight">60 Kg</b>
+                        </div>
+                        <div class="info-row">
+                            <span>D.O.B.</span><b id="pdob">15 Dec 1989</b>
+                            <span>Location</span><b id="plocation">Faridabad</b>
+                        </div>
+                        <div class="info-row">
+                            <span>Marital Status</span><b id="pms">Married</b>
+                            <span>Category</span><b id="pcategory2">Caretaker</b>
+                        </div>
+                        <div class="info-row">
+                            <span>Height</span><b id="pheight">5.4 ft</b>
+                            <span>Rating</span>
+                            <b class="rating"><span id="prating">4.5</span> <span class="stars">★★★★☆</span></b>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About -->
+                <section class="block">
+                    <h3 class="title">About Me</h3>
+                    <p id="pabout" class="about-text"></p>
+                </section>
+
+                <!-- Mid: Experience + Patients -->
+                <section class="mid-2col">
+                    <div class="card">
+                        <div class="card-title">
+                            <img src="experiece.png" class="icon" alt="Experience" />
+                            <span class="muted"><span id="pexpYearsBig">3.9</span> YEARS OF <b>EXPERIENCE</b></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="exp-line">
+                                <span id="pexpLine">3.9 years Homecare experience</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">
+                            <img src="househelp.png" class="icon" alt="Patients" />
+                            <span class="muted"><span id="ptotal">12</span> NUMBER OF <b>PATIENTS SERVICED</b></span>
+                        </div>
+                        <div class="card-body patients">
+                            <canvas id="patientsChart" width="260" height="180"></canvas>
+                            <ul class="legend">
+                                <li><i class="dot dot-basic"></i><span id="pbasic">8</span> Basic patients</li>
+                                <li><i class="dot dot-advance"></i><span id="padvance">2</span> Advance patients</li>
+                                <li><i class="dot dot-critical"></i><span id="pcritical">2</span> Critical patients</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom: Responsibilities + Expertise -->
+                <section class="bottom-2col">
+                    <div>
+                        <h3 class="title">My Responsibility</h3>
+
+                        <!-- Grooming -->
+                        <div class="resp-block">
+                            <img src="Grooming.png" class="icon" alt="Hygiene" />
+                            <div>
+                                <div class="sub-h">a) Grooming &amp; Personal hygiene</div>
+                                <ul class="bullets">
+                                    <li>Oral &amp; skin care</li>
+                                    <li>Bathing and sponging</li>
+                                    <li>Sanitary care (diaper change)</li>
+                                    <li>Massaging and oiling</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Feeding -->
+                        <div class="resp-block">
+                            <img src="feeding.png" class="icon" alt="Feeding" />
+                            <div>
+                                <div class="sub-h">b) Feeding</div>
+                                <ul class="bullets">
+                                    <li>Feeding to the patient</li>
+                                    <li>Raw fruits and salad cutting for the patient</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Patient Assistance -->
+                        <div class="resp-block">
+                            <img src="Patientassistance.png" class="icon" alt="Assistance" />
+                            <div>
+                                <div class="sub-h">c) Patient assistance</div>
+                                <ul class="bullets">
+                                    <li>Dressing and undressing the patient</li>
+                                    <li>Changing bedsheets for the patient</li>
+                                    <li>Mobility assistance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <h3 class="title">My Expertise</h3>
+                        <ul class="bullets">
+                            <li>Administration of oral medicines</li>
+                            <li>Medication reminder</li>
+                            <li>Performing light exercises</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Identification Documents -->
+                <section class="block id-docs">
+                    <h3 class="title">Identification Documents</h3>
+                    <ol class="id-list">
+                        <li>Pancard <span class="check">✔</span></li>
+                        <li>Aadharcard <span class="check">✔</span></li>
+                    </ol>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
